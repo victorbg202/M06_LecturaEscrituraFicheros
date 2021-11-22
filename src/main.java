@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -86,15 +87,15 @@ public class main {
 			}
 			// Sobreescribir a po @
 			else if (opcion == 4) {
-				
+				sobrescribirA();
 			}
 			// Eliminar lineas con la primera palabra igual que la anterior
 			else if (opcion == 5) {
-				
+				eliminarPrimeraIgual();
 			}
 			// Escribir al final del texto la primera estrofa
 			else if (opcion == 6) {
-				
+				escribirPrimerFinal();
 			}
 			//Reescribir poema original
 			else if (opcion == 7) {
@@ -104,6 +105,83 @@ public class main {
 		
 	}
 	
+	//Escribir al final del texto la primera estrofa
+	private static void escribirPrimerFinal() {
+//        try {
+//    		BufferedReader br = null;
+//			br = new BufferedReader(new FileReader("poema.txt"));
+//			String lineaPoema;
+//			String PrimeraEstrofa = "";
+//			lineaPoema = br.readLine();
+//			
+//			
+//			
+//			while (lineaPoema != "") {
+//					PrimeraEstrofa += lineaPoema;
+//			}
+//
+//			System.out.println(PrimeraEstrofa);
+//				
+//			br.close();			
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+		limpiarPantalla();
+		try {
+            Scanner poema = new Scanner(new File("poema.txt"));
+            String estrofa = "";
+            String line = poema.nextLine();
+            
+            while (!line.equals("")) {
+                estrofa += poema.nextLine() + "\n";
+            }
+            System.out.println(poema + estrofa);
+            //guardarResultado(poema + estrofa);
+            
+            // Volver al menu
+            volverMenu();         
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+	}
+
+	// Eliminar las lineas cuya primera palabra sea igual que la anterior
+	private static void eliminarPrimeraIgual() {
+		limpiarPantalla();
+		try {
+            Scanner poema = new Scanner(new File("poema.txt"));
+            String Pfinal = "";
+            String palabraAnterior = "";
+            
+            while (poema.hasNextLine()) {
+                String line = poema.nextLine();
+                String[] splitLinea = line.split(" ");
+                String palabraActual = splitLinea[0];
+
+                
+
+            	System.out.println("Panterior" + palabraAnterior);
+            	System.out.println("ACTUAL" + palabraActual);
+                
+//                if (palabraActual.equals(palabraAnterior)) {
+//                }
+
+                palabraAnterior = palabraActual;
+                
+                Pfinal += Pfinal+poema.nextLine();
+                
+            }
+            //guardarResultado(Pfinal);
+            
+            // Volver al menu
+            volverMenu();         
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+	}
+
 	// Volver al poema original
 	private static void reescribirPoema() {
 		try {
@@ -118,27 +196,38 @@ public class main {
             ex.printStackTrace();
         }	
 	}
+	
+	// Mostrar todo el poema por consola
+	private static void mostrarPoema() {
+		limpiarPantalla();
+		try {
+            Scanner poema = new Scanner(new File("poema.txt"));
+            while (poema.hasNextLine()) {
+                String line = poema.nextLine();
+                System.out.println(line);
+            }
+            poema.close();
+            
+            // Volver al menu
+            volverMenu();         
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+	}
 
 	// Mostrar primer verso de cada estrofa
 	private static void mostrarPrimerVerso() {
 		limpiarPantalla();
 		try {
-			BufferedReader br = null;
-            br = new BufferedReader(new FileReader("poema.txt"));
-            String lineaPoema = br.readLine();
-            
-            	if (lineaPoema != null) {
-            		System.out.println(lineaPoema);
-            		char mayus = lineaPoema.charAt(0);
-                    if ('A' == mayus) {
-
-                        System.out.println(lineaPoema);
-					}
-                    
-            	}  	
-            
-            
-            br.close();
+            Scanner poema = new Scanner(new File("poema.txt"));
+            String Pfinal = poema.nextLine() + "\n";
+            while (poema.hasNextLine()) {
+                String line = poema.nextLine();
+                if (line.equals("")) {
+                	Pfinal += poema.nextLine() + "\n";
+                }
+            }
+            guardarResultado(Pfinal);
             
             // Volver al menu
             volverMenu();         
@@ -163,6 +252,23 @@ public class main {
         }		
 	}
 	
+	//Eliminar las lineas en blanco
+	private static void sobrescribirA() {
+		try {
+			limpiarPantalla();
+			String text = readFileAsString("poema.txt");
+			text = text.replaceAll("a", "@");
+			text = text.replaceAll("A", "@");
+            guardarResultado(text);
+            System.out.println(text);
+            
+            // Volver al menu
+            volverMenu();         
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }		
+	}
+	
 
 	//SObreescribir fixero
 	private static void guardarResultado(String text) throws IOException {
@@ -173,7 +279,8 @@ public class main {
 			e.printStackTrace();
 		} 
 	}
-
+	
+	//Leer como string
 	private static String readFileAsString(String contenido) throws IOException {
 		FileInputStream fis = new FileInputStream(contenido);
 		byte[] buffer = new byte[10];
@@ -187,24 +294,6 @@ public class main {
 		String content = sb.toString();
 		
 		return content;
-	}
-
-	// Mostrar todo el poema por consola
-	private static void mostrarPoema() {
-		limpiarPantalla();
-		try {
-            Scanner poema = new Scanner(new File("poema.txt"));
-            while (poema.hasNextLine()) {
-                String line = poema.nextLine();
-                System.out.println(line);
-            }
-            poema.close();
-            
-            // Volver al menu
-            volverMenu();         
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
 	}
 	
 	// Volver al menu principal
